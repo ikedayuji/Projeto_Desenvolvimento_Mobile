@@ -14,7 +14,6 @@ class ListaTarefas extends StatefulWidget {
 }
 
 class ListaTarefasState extends State<ListaTarefas> {
-
   TextEditingController descriptionControl = TextEditingController();
   TextEditingController dataControl = TextEditingController();
   TextEditingController horaControl = TextEditingController();
@@ -35,46 +34,53 @@ class ListaTarefasState extends State<ListaTarefas> {
               controller: descriptionControl,
               decoration: const InputDecoration(
                 labelText: "Título",
-                icon: Icon(Icons.task)
-              )
+                icon: Icon(Icons.task),
+              ),
             ),
             TextFormField(
               controller: dataControl,
               readOnly: true,
               decoration: const InputDecoration(
                 labelText: "Data da tarefa",
-                icon: Icon(Icons.calendar_month)
+                icon: Icon(Icons.calendar_month),
               ),
               onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
                   context: context,
                   initialDate: DateTime.now(),
                   firstDate: DateTime(2022),
-                  lastDate: DateTime(2030)
+                  lastDate: DateTime(2030),
                 );
-                if (pickedDate!=null) {
-                  String dataFormatada = DateFormat('dd/MM/yyyy').format(pickedDate);
+                if (pickedDate != null) {
+                  String dataFormatada =
+                      DateFormat('dd/MM/yyyy').format(pickedDate);
                   setState(() {
                     dataControl.text = dataFormatada;
                   });
                 }
-              }
+              },
             ),
             TextFormField(
               controller: horaControl,
               readOnly: true,
               decoration: const InputDecoration(
                 icon: Icon(Icons.av_timer),
-                labelText: "Hora da tarefa"
+                labelText: "Hora da tarefa",
               ),
               onTap: () async {
                 TimeOfDay? pickedTime = await showTimePicker(
                   context: context,
-                  initialTime: TimeOfDay.now()
+                  initialTime: TimeOfDay.now(),
                 );
-                if (pickedTime!=null) {
+                if (pickedTime != null) {
+                  String horaFormatada = pickedTime.hour < 10
+                      ? '0${pickedTime.hour}'
+                      : '${pickedTime.hour}';
+                  String minutoFormatado = pickedTime.minute < 10
+                      ? '0${pickedTime.minute}'
+                      : '${pickedTime.minute}';
                   setState(() {
-                    horaControl.text = "${pickedTime.hour}:${pickedTime.minute}";
+                    horaControl.text = "$horaFormatada:$minutoFormatado";
                   });
                 }
               },
@@ -83,29 +89,30 @@ class ListaTarefasState extends State<ListaTarefas> {
               controller: detalhesControl,
               decoration: const InputDecoration(
                 icon: Icon(Icons.description),
-                labelText: "Detalhes da tarefa"
+                labelText: "Detalhes da tarefa",
               ),
               maxLines: 2,
             ),
             const SizedBox(height: 10),
+
             /// Botão responsável por cadastrar uma nova tarefa
             ElevatedButton(
               style: ButtonStyle(
                 // MediaQuery.of(context).size.width é a largura da tela do celular
                 // *0.75 indica que é 75% da largura
-                fixedSize: MaterialStatePropertyAll(Size(MediaQuery.of(context).size.width*0.75, 50)),
-                foregroundColor: const MaterialStatePropertyAll(Colors.white),
-                backgroundColor: const MaterialStatePropertyAll(Colors.greenAccent)
+                fixedSize: MaterialStateProperty.all(
+                    Size(MediaQuery.of(context).size.width * 0.75, 50)),
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                backgroundColor: MaterialStateProperty.all(Colors.greenAccent),
               ),
               child: const Text("Cadastrar"),
               onPressed: () {
-                /// Instanciar um objeto da classe Tarefa
                 Tarefa task = Tarefa(
-                  id: listaTarefa.length+1,
+                  id: listaTarefa.length + 1,
                   descricao: descriptionControl.text,
                   data: dataControl.text,
                   hora: horaControl.text,
-                  detalhes: detalhesControl.text
+                  detalhes: detalhesControl.text,
                 );
                 setState(() {
                   listaTarefa.add(task);
@@ -123,52 +130,57 @@ class ListaTarefasState extends State<ListaTarefas> {
                   Tarefa task = listaTarefa[index];
                   return ListTile(
                     // Operador condicional ternário
-                    leading: (task.situacao==1) ? 
-                      const Icon(Icons.check_circle, color: Color.fromARGB(255, 76, 249, 82))
-                      : const Icon(Icons.warning, color: Colors.amber),
+                    leading: (task.situacao == 1)
+                        ? const Icon(Icons.check_circle,
+                            color: Color.fromARGB(255, 76, 249, 82))
+                        : const Icon(Icons.warning, color: Colors.amber),
                     title: Text(
                       task.descricao,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue
-                      )
+                        color: Colors.blue,
+                      ),
                     ),
                     subtitle: Text("${task.data} às ${task.hora}"),
-                    trailing: (task.situacao==0) ? 
-                      IconButton(
-                        icon: const Icon(Icons.check, color: Colors.blueAccent),
-                        onPressed:() {
-                          setState(() {
-                            listaTarefa[index].situacao = 1;
-                          });
-                        },
-                      ) :
-                      IconButton(
-                        icon: const Icon(Icons.undo_rounded, color: Colors.redAccent),
-                        onPressed:() {
-                          setState(() {
-                            listaTarefa[index].situacao = 0;
-                          });
-                        },
-                      ),
+                    trailing: (task.situacao == 0)
+                        ? IconButton(
+                            icon: const Icon(Icons.check,
+                                color: Colors.blueAccent),
+                            onPressed: () {
+                              setState(() {
+                                listaTarefa[index].situacao = 1;
+                              });
+                            },
+                          )
+                        : IconButton(
+                            icon: const Icon(Icons.undo_rounded,
+                                color: Colors.redAccent),
+                            onPressed: () {
+                              setState(() {
+                                listaTarefa[index].situacao = 0;
+                              });
+                            },
+                          ),
                     onLongPress: () {
                       print("Ação on Long Press");
                       Navigator.push(
-                        context, 
+                        context,
                         MaterialPageRoute(
-                          builder:(context) => DetalhesTarefa(task: listaTarefa[index]),
-                        )
+                          builder: (context) =>
+                              DetalhesTarefa(task: listaTarefa[index]),
+                        ),
                       );
-                    },  
+                    },
                     onTap: () {
                       print("Ação Tap");
                     },
                   );
                 },
               ),
-            )
-          ]
-        ))
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

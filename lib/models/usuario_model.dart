@@ -5,10 +5,10 @@ class Usuario {
   String email;
 
   /// Construtor da classe
-  Usuario({
-    required this.nome,
-    required this.urlFoto,
-    this.email = "usuario@mail.com"
-  });
-
+  Usuario(
+      {required this.nome,
+      required this.urlFoto,
+      this.email = "usuario@mail.com",
+      required DateTime dataNascimento,
+      required String telefone});
 }
