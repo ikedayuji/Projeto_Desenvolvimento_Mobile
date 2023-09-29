@@ -54,7 +54,7 @@ class UsuariosState extends State<Usuarios> {
             email: email,
             telefone: telefone,
             dataNascimento: dataNascimento!,
-            urlFoto: 'https://i.pravatar.cc/300?img=${_lista.length}',
+            urlFoto: 'https://i.pravatar.cc/50?img=${_lista.length}',
           ),
         );
       });
