@@ -54,6 +54,6 @@ class HomeState extends State<Home> {
             /*child: Image.asset(
           "./assets/images/computer.png"
         )*/
-            child: Lottie.asset("./assets/images/Animacao_teste2.json")));
+            child: Lottie.asset("./assets/images/Animacao5sobreposicao.json")));
   }
 }
